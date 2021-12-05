@@ -1,7 +1,34 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+function SitemapLinks({ isActive, setActive, children, title }) {
+    return (
+        <div className="px-4 w-full md:w-2/12 mb-4 md:mb-0 accordion">
+            <h5 className="text-lg font-semibold mb-2 relative">{title}
+                <button onClick={() => setActive(isActive)} className={["absolute block md:hidden right-0 tranform -translate-y-1/2 focus:outline-none transition duration-200 top-1/2 ", isActive ? "rotate - 0" : "rotate - 180"].join(" ")}><svg
+                    width="20"
+                    height="9"
+                    viewBox="0 0 20 9"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M0.197257 0.403676C0.526597 -0.0396672 1.15298 -0.132085 1.59632 0.197256L9.75 6.25427L17.9037 0.197256C18.347 -0.132085 18.9734 -0.0396672 19.3027 0.403676C19.6321 0.847019 19.5397 1.4734 19.0963 1.80274L10.3463 8.30274C9.99227 8.56575 9.50773 8.56575 9.15368 8.30274L0.403676 1.80274C-0.0396667 1.4734 -0.132084 0.847019 0.197257 0.403676Z"
+                        fill="black"
+                    />
+                </svg></button>
+            </h5>
+            <ul className={["md:h-auto md:visible md:opacity-100 overflow-hidden transition duration-200", isActive ? "h-0 invisible opacity-0" : "opacity-100"].join(" ")}>
+                {children}
+            </ul>
+        </div >
+    )
+}
+
 export default function Sitemap() {
+    const [active, setActive] = React.useState(null)
     return (
         <section className="sitemap">
             <div className="border-b border-gray-200 py-12 mt-16 px-4">
@@ -13,51 +40,42 @@ export default function Sitemap() {
                 </div>
                 <aside className="container mx-auto">
                     <div className="flex flex-wrap -mx-4 justify-center">
-                        <div className="px-4 w-full md:w-2/12 mb-4 md:mb-0 accordion">
-                            <h5 className="text-lg font-semibold mb-2 relative">Overview</h5>
-                            <ul className="h-0 invisible md:h-auto md:visible overflow-hidden">
-                                <li>
-                                    <Link to="/shipping" className="hover:underline py-1 block">Shipping</Link>
-                                </li>
-                                <li>
-                                    <Link to="/refund" className="hover:underline py-1 block">Refund</Link>
-                                </li>
-                                <li>
-                                    <Link to="/promotion" className="hover:underline py-1 block">Promotion</Link>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="px-4 w-full md:w-2/12 mb-4 md:mb-0 accordion">
-                            <h5 className="text-lg font-semibold mb-2 relative">Company</h5>
-                            <ul className="h-0 invisible md:h-auto md:visible overflow-hidden">
-                                <li>
-                                    <Link to="/about" className="hover:underline py-1 block">About</Link>
-                                </li>
-                                <li>
-                                    <Link to="/career" className="hover:underline py-1 block">Career</Link>
-                                </li>
-                                <li>
-                                    <Link to="/contact-us" className="hover:underline py-1 block">Contact Us</Link>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="px-4 w-full md:w-2/12 mb-4 md:mb-0 accordion">
-                            <h5 className="text-lg font-semibold mb-2 relative">Explore</h5>
-                            <ul className="h-0 invisible md:h-auto md:visible overflow-hidden">
-                                <li>
-                                    <Link to="/terms-conds" className="hover:underline py-1 block"
-                                    >Terms & Conds</Link>
-                                </li>
-                                <li>
-                                    <Link to="/privacy-policy" className="hover:underline py-1 block"
-                                    >Privacy Policy</Link>
-                                </li>
-                                <li>
-                                    <Link to="/for-developer" className="hover:underline py-1 block"
-                                    >For Developer</Link>
-                                </li>
-                            </ul>
-                        </div>
+                        <SitemapLinks setActive={setActive} isActive={active === 1 ? null : 1} title="Overview">
+                            <li>
+                                <Link to="/shipping" className="hover:underline py-1 block">Shipping</Link>
+                            </li>
+                            <li>
+                                <Link to="/refund" className="hover:underline py-1 block">Refund</Link>
+                            </li>
+                            <li>
+                                <Link to="/promotion" className="hover:underline py-1 block">Promotion</Link>
+                            </li>
+                        </SitemapLinks>
+                        <SitemapLinks setActive={setActive} isActive={active === 2 ? null : 2} title="Company">
+                            <li>
+                                <Link to="/about" className="hover:underline py-1 block">About</Link>
+                            </li>
+                            <li>
+                                <Link to="/career" className="hover:underline py-1 block">Career</Link>
+                            </li>
+                            <li>
+                                <Link to="/contact-us" className="hover:underline py-1 block">Contact Us</Link>
+                            </li>
+                        </SitemapLinks>
+                        <SitemapLinks setActive={setActive} isActive={active === 3 ? null : 3} title="Explore">
+                            <li>
+                                <Link to="/terms-conds" className="hover:underline py-1 block"
+                                >Terms & Conds</Link>
+                            </li>
+                            <li>
+                                <Link to="/privacy-policy" className="hover:underline py-1 block"
+                                >Privacy Policy</Link>
+                            </li>
+                            <li>
+                                <Link to="/for-developer" className="hover:underline py-1 block"
+                                >For Developer</Link>
+                            </li>
+                        </SitemapLinks>
                         <div className="px-4 w-full md:w-3/12 mb-4 md:mb-0">
                             <h5 className="text-lg font-semibold mb-2 relative">
                                 Special Letter
@@ -87,8 +105,8 @@ export default function Sitemap() {
                             </form>
                         </div>
                     </div>
-                </aside>
-            </div>
-        </section>
+                </aside >
+            </div >
+        </section >
     )
 }
