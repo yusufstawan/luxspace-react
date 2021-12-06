@@ -8,10 +8,11 @@ import ShippingDetails from 'assets/parts/Cart/ShippingDetails'
 
 import Sitemap from 'assets/parts/HomePage/Sitemap'
 import Footer from 'assets/parts/Footer'
+import Documents from 'assets/parts/Document'
 
-export default function HomePages() {
+export default function Cart() {
     return (
-        <>
+        <Documents>
             <Header theme="black" />
 
             <Breadcrumb
@@ -21,9 +22,9 @@ export default function HomePages() {
                 ]}
             />
 
-            <section class="md:py-16">
-                <div class="container mx-auto px-4">
-                    <div class="flex -mx-4 flex-wrap">
+            <section className="md:py-16">
+                <div className="container mx-auto px-4">
+                    <div className="flex -mx-4 flex-wrap">
                         <ShoppingCart />
                         <ShippingDetails />
                     </div>
@@ -31,6 +32,6 @@ export default function HomePages() {
             </section>
             <Sitemap />
             <Footer />
-        </>
+        </Documents>
     )
 }

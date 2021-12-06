@@ -1,164 +1,177 @@
 import React from 'react'
 
+import { useHistory } from 'react-router-dom'
+
+import useAsync from 'assets/helpers/hooks/useAsync'
+import useForm from 'assets/helpers/hooks/useForm';
+import fetch from 'assets/helpers/fetch'
+import { useGlobalContext } from 'assets/helpers/hooks/useGlobalContext';
+
 export default function ShippingDetails() {
+    const history = useHistory();
+    const { data, run, isLoading } = useAsync();
+    const { state, dispatch } = useGlobalContext();
+
+    const { state: payload, fnUpdateState } = useForm({
+        completeName: "",
+        emailAddress: "",
+        address: "",
+        phoneNumber: "",
+        courier: "",
+        payment: "",
+    })
+
+    const isSubmitDisable = Object.keys(payload).filter(key => {
+        return payload[key] !== ""
+    }).length === Object.keys(payload).length
+
+    React.useEffect(() => {
+        run(fetch({ url: `/api/checkout/meta` }));
+    }, [run]);
+
+    async function fnSubmit(event) {
+        event.preventDefault()
+        try {
+            const res = await fetch({
+                url: `/api/checkout`, method: "POST", body: JSON.stringify({
+                    ...payload,
+                    cart: Object.keys(state.cart).map(key => state.cart[key])
+                })
+            })
+            if (res) {
+                history.push("/congratulation")
+                dispatch({
+                    type: "RESET_CART"
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
-        <div class="w-full md:px-4 md:w-4/12" id="shipping-detail">
-            <div class="bg-gray-100 px-4 py-6 md:p-8 md:rounded-3xl">
-                <form action="success.html">
-                    <div class="flex flex-start mb-6">
-                        <h3 class="text-2xl">Shipping Details</h3>
+        <div className="w-full md:px-4 md:w-4/12" id="shipping-detail">
+            <div className="bg-gray-100 px-4 py-6 md:p-8 md:rounded-3xl">
+                <form onSubmit={fnSubmit}>
+                    <div className="flex flex-start mb-6">
+                        <h3 className="text-2xl">Shipping Details</h3>
                     </div>
 
-                    <div class="flex flex-col mb-4">
-                        <label for="complete-name" class="text-sm mb-2"
+                    <div className="flex flex-col mb-4">
+                        <label htmlFor="completeName" className="text-sm mb-2"
                         >Complete Name</label
                         >
                         <input
-                            data-input
+                            onChange={fnUpdateState}
+                            value={payload.completeName}
                             type="text"
-                            id="complete-name"
-                            class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
+                            name="completeName"
+                            className="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
                             placeholder="Input your name"
                         />
                     </div>
 
-                    <div class="flex flex-col mb-4">
-                        <label for="email" class="text-sm mb-2">Email Address</label>
+                    <div className="flex flex-col mb-4">
+                        <label htmlFor="emailAddress" className="text-sm mb-2">Email Address</label>
                         <input
-                            data-input
+                            onChange={fnUpdateState}
+                            value={payload.emailAddress}
                             type="email"
-                            id="email"
-                            class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
+                            name="emailAddress"
+                            className="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
                             placeholder="Input your email address"
                         />
                     </div>
 
-                    <div class="flex flex-col mb-4">
-                        <label for="address" class="text-sm mb-2">Address</label>
+                    <div className="flex flex-col mb-4">
+                        <label htmlFor="address" className="text-sm mb-2">Address</label>
                         <input
-                            data-input
+                            onChange={fnUpdateState}
+                            value={payload.address}
                             type="text"
-                            id="address"
-                            class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
+                            name="address"
+                            className="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
                             placeholder="Input your address"
                         />
                     </div>
 
-                    <div class="flex flex-col mb-4">
-                        <label for="phone-number" class="text-sm mb-2"
+                    <div className="flex flex-col mb-4">
+                        <label htmlFor="phoneNumber" className="text-sm mb-2"
                         >Phone Number</label
                         >
                         <input
-                            data-input
+                            onChange={fnUpdateState}
+                            value={payload.phoneNumber}
                             type="tel"
-                            id="phone-number"
-                            class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
+                            name="phoneNumber"
+                            className="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
                             placeholder="Input your phone number"
                         />
                     </div>
 
-                    <div class="flex flex-col mb-4">
-                        <label for="complete-name" class="text-sm mb-2"
-                        >Choose Courier</label
-                        >
-                        <div class="flex -mx-2 flex-wrap">
-                            <div class="px-2 w-6/12 h-24 mb-4">
-                                <button
-                                    type="button"
-                                    data-value="fedex"
-                                    data-name="courier"
-                                    class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
-                                >
-                                    <img
-                                        src="./images/content/logo-fedex.svg"
-                                        alt="Logo Fedex"
-                                        class="object-contain max-h-full"
-                                    />
-                                </button>
-                            </div>
-                            <div class="px-2 w-6/12 h-24 mb-4">
-                                <button
-                                    type="button"
-                                    data-value="dhl"
-                                    data-name="courier"
-                                    class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
-                                >
-                                    <img
-                                        src="./images/content/logo-dhl.svg"
-                                        alt="Logo dhl"
-                                        class="object-contain max-h-full"
-                                    />
-                                </button>
-                            </div>
+                    <div className="flex flex-col mb-4">
+                        <label htmlFor="completeName" className="text-sm mb-2">Choose Courier
+                        </label>
+                        <div className="flex -mx-2 flex-wrap">
+                            {
+                                isLoading ? Array(2).fill().map((_, index) => <div key={index} className="px-2 h-24 mb-4 w-6/12">
+                                    <div className="bg-gray-300 w-full h-full animate-pulse rounded-lg mx-2"></div>
+                                </div>) : data?.couriers?.map(item => <div className="px-2 w-6/12 h-24 mb-4">
+                                    <button
+                                        type="button"
+                                        onClick={
+                                            () => fnUpdateState({
+                                                target: {
+                                                    name: "courier", value: item.id
+                                                }
+                                            })
+                                        }
+                                        className="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
+                                    >
+                                        <img
+                                            src={item.imgUrl}
+                                            alt={item.name}
+                                            className="object-contain max-h-full"
+                                        />
+                                    </button>
+                                </div>)}
                         </div>
                     </div>
 
-                    <div class="flex flex-col mb-4">
-                        <label for="complete-name" class="text-sm mb-2"
-                        >Choose Payment</label
-                        >
-                        <div class="flex -mx-2 flex-wrap">
-                            <div class="px-2 w-6/12 h-24 mb-4">
-                                <button
-                                    type="button"
-                                    data-value="midtrans"
-                                    data-name="payment"
-                                    class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
-                                >
-                                    <img
-                                        src="./images/content/logo-midtrans.png"
-                                        alt="Logo midtrans"
-                                        class="object-contain max-h-full"
-                                    />
-                                </button>
-                            </div>
-                            <div class="px-2 w-6/12 h-24 mb-4">
-                                <button
-                                    type="button"
-                                    data-value="mastercard"
-                                    data-name="payment"
-                                    class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
-                                >
-                                    <img
-                                        src="./images/content/logo-mastercard.svg"
-                                        alt="Logo mastercard"
-                                    />
-                                </button>
-                            </div>
-                            <div class="px-2 w-6/12 h-24 mb-4">
-                                <button
-                                    type="button"
-                                    data-value="bitcoin"
-                                    data-name="payment"
-                                    class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
-                                >
-                                    <img
-                                        src="./images/content/logo-bitcoin.svg"
-                                        alt="Logo bitcoin"
-                                        class="object-contain max-h-full"
-                                    />
-                                </button>
-                            </div>
-                            <div class="px-2 w-6/12 h-24 mb-4">
-                                <button
-                                    type="button"
-                                    data-value="american-express"
-                                    data-name="payment"
-                                    class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
-                                >
-                                    <img
-                                        src="./images/content/logo-american-express.svg"
-                                        alt="Logo american-logo-american-express"
-                                    />
-                                </button>
-                            </div>
+                    <div className="flex flex-col mb-4">
+                        <label htmlFor="completeName" className="text-sm mb-2">
+                            Choose Payment
+                        </label>
+                        <div className="flex -mx-2 flex-wrap">
+                            {
+                                isLoading ? Array(2).fill().map((_, index) => <div key={index} className="px-2 h-24 mb-4 w-6/12">
+                                    <div className="bg-gray-300 w-full h-full animate-pulse rounded-lg mx-2"></div>
+                                </div>) : data?.payments?.map(item => <div className="px-2 w-6/12 h-24 mb-4">
+                                    <button
+                                        type="button"
+                                        onClick={
+                                            () => fnUpdateState({
+                                                target: {
+                                                    name: "payment", value: item.id
+                                                }
+                                            })
+                                        }
+                                        className="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
+                                    >
+                                        <img
+                                            src={item.imgUrl}
+                                            alt={item.name}
+                                            className="object-contain max-h-full"
+                                        />
+                                    </button>
+                                </div>)}
                         </div>
                     </div>
-                    <div class="text-center">
+                    <div className="text-center">
                         <button
                             type="submit"
-                            disabled
-                            class="bg-pink-400 text-black hover:bg-black hover:text-pink-400 focus:outline-none w-full py-3 rounded-full text-lg focus:text-black transition-all duration-200 px-6"
+                            disabled={!isSubmitDisable}
+                            className="bg-pink-400 text-black hover:bg-black hover:text-pink-400 focus:outline-none w-full py-3 rounded-full text-lg focus:text-black transition-all duration-200 px-6"
                         >
                             Checkout Now
                         </button>

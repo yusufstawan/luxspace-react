@@ -102,27 +102,26 @@ export default function Carousel({ children, refContainer }) {
     const onDragStart = useCallback(
         (e) => {
             e = e || window.event;
-            e.preventDefault()
+            e.preventDefault();
 
-            posInitial.current = refDragHandler.current.offsetLeft
+            posInitial.current = refDragHandler.current.offsetLeft;
 
             if (e.type === "touchstart") {
-                posX1.current = e.touch[0].clientX
+                posX1.current = e.touches[0].clientX;
             } else {
-                posX1.current = e.clientX
-                document.onmouseup = onDragEnd
-                document.onmousemove = onDragMove
+                posX1.current = e.clientX;
+                document.onmouseup = onDragEnd;
+                document.onmousemove = onDragMove;
             }
-        }, [onDragEnd,
-        onDragMove]);
+        },
+        [onDragEnd, onDragMove]
+    );
 
     const onClick = useCallback(
         (e) => {
             e = e || window.event;
             !isAllowShift.current && e.preventDefault();
-        },
-        [],
-    )
+        }, [])
 
     useLayoutEffect(() => {
         const refForwardDragHandler = refDragHandler.current
