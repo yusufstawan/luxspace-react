@@ -51,7 +51,7 @@ function Loading({ ratio = {} }) {
 }
 
 export default function BrowseRoom() {
-    const { data, status, error, run, isLoading } = useAsync();
+    const { data, run, isLoading } = useAsync();
 
     useEffect(() => {
         run(fetch(
